@@ -1,0 +1,15 @@
+on:
+  schedule:
+  - cron: "0 2 * * 1-5"
+
+jobs:
+  my_job:
+    name: Backup Rclone
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+          
+      - run: rclone copy source:sourcepath dest:destpath
