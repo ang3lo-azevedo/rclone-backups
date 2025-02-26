@@ -16,6 +16,7 @@ jobs:
         uses: AnimMouse/setup-rclone@v1
         with:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
+          token: ${{ secrets.GH_PAT }}
 
       - name: Backup Immich
         run: |
@@ -51,8 +52,8 @@ jobs:
             exit 1
           fi
 
-      - name: Update Rclone config
-        uses: AnimMouse/setup-rclone/update-config@v1
-        with:
-          rclone_config_secret_name: RCLONE_CONFIG
-          token: ${{ secrets.GH_PAT }}
+      #- name: Update Rclone config
+      #  uses: AnimMouse/setup-rclone/update-config@v1
+      #  with:
+      #    rclone_config_secret_name: RCLONE_CONFIG
+      #    token: ${{ secrets.GH_PAT }}
