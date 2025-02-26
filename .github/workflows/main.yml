@@ -1,15 +1,58 @@
+name: Rclone Backups
+
 on:
+  workflow_dispatch:
   schedule:
-  - cron: "0 2 * * 1-5"
+    - cron: "0 2 * * *"
 
 jobs:
-  my_job:
-    name: Backup Rclone
+  backup:
+    name: Backup rclone drives
     runs-on: ubuntu-latest
+    env:
+      RCLONE_CONFIG_PASS: ${{ secrets.RCLONE_CONFIG_PASS }}
     steps:
       - name: Setup Rclone
         uses: AnimMouse/setup-rclone@v1
         with:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
+      - name: Backup Immich
+        run: |
+          echo "Backing up Immich to onedrive-isel"
+          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.IMMICH_SOURCE }} ${{ secrets.ONEDRIVE_DEST }}/immich
+          if [ $? -ne 0 ]; then
+            echo "Error backing up immich to onedrive-isel"
+            exit 1
+          fi
+
+          echo "Backing up Immich to backups"
+          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.IMMICH_SOURCE }} ${{ secrets.BACKUPS_DEST }}/immich
+          if [ $? -ne 0 ]; then
+            echo "Error backing up immich to backups"
+            exit 1
+          fi
+
           
-      - run: rclone copy source:sourcepath dest:destpath
+
+      - name: Backup Nextcloud
+        run: |
+          echo "Backing up Nextcloud to backups"
+          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.NEXTCLOUD_SOURCE }} ${{ secrets.BACKUPS_DEST }}/nextcloud
+          if [ $? -ne 0 ]; then
+            echo "Error backing up nextcloud to backups"
+            exit 1
+          fi
+
+          echo "Backing up Nextcloud to onedrive-isel"
+          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.NEXTCLOUD_SOURCE }} ${{ secrets.ONEDRIVE_DEST }}/nextcloud
+          if [ $? -ne 0 ]; then
+            echo "Error backing up nextcloud to onedrive-isel"
+            exit 1
+          fi
+
+      - name: Update Rclone config
+        uses: AnimMouse/setup-rclone/update-config@v1
+        with:
+          rclone_config_secret_name: RCLONE_CONFIG
+          token: ${{ secrets.GH_PAT }}
