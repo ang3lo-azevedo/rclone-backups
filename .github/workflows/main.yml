@@ -18,6 +18,24 @@ jobs:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
           token: ${{ secrets.GH_PAT }}
 
+      - name: Move OneDrive ISEL
+        run: |
+          echo "Backing up Immich to onedrive-isel"
+          rclone move -P onedrive-isel: onedrive-isel-crypt:
+          if [ $? -ne 0 ]; then
+            echo "Error backing up immich to onedrive-isel"
+            exit 1
+          fi
+
+      - name: Move Immich backup
+        run: |
+          echo "Backing up Immich to onedrive-isel"
+          rclone move -P ${{ secrets.ONEDRIVE_DEST }}/immich ${{ secrets.ONEDRIVE_DEST }}/Backups/immich
+          if [ $? -ne 0 ]; then
+            echo "Error backing up immich to onedrive-isel"
+            exit 1
+          fi
+
       - name: Backup Immich
         run: |
           echo "Backing up Immich to onedrive-isel"
