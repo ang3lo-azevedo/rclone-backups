@@ -20,31 +20,14 @@ jobs:
 
       - name: Move OneDrive ISEL
         run: |
-          echo "Backing up Immich to onedrive-isel"
           rclone move -P onedrive-isel: onedrive-isel-crypt:
           if [ $? -ne 0 ]; then
-            echo "Error backing up immich to onedrive-isel"
-            exit 1
-          fi
-
-      - name: Move Immich backup
-        run: |
-          echo "Backing up Immich to onedrive-isel"
-          rclone move -P ${{ secrets.ONEDRIVE_DEST }}/immich ${{ secrets.ONEDRIVE_DEST }}/Backups/immich
-          if [ $? -ne 0 ]; then
-            echo "Error backing up immich to onedrive-isel"
+            echo "Error"
             exit 1
           fi
 
       - name: Backup Immich
         run: |
-          echo "Backing up Immich to onedrive-isel"
-          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.IMMICH_SOURCE }} ${{ secrets.ONEDRIVE_DEST }}/Backups/immich
-          if [ $? -ne 0 ]; then
-            echo "Error backing up immich to onedrive-isel"
-            exit 1
-          fi
-
           echo "Backing up Immich to backups"
           rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.IMMICH_SOURCE }} ${{ secrets.BACKUPS_DEST }}/immich
           if [ $? -ne 0 ]; then
@@ -54,13 +37,6 @@ jobs:
 
       - name: Backup Nextcloud
         run: |
-          echo "Backing up Nextcloud to onedrive-isel"
-          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.NEXTCLOUD_SOURCE }} ${{ secrets.ONEDRIVE_DEST }}/Backups/nextcloud
-          if [ $? -ne 0 ]; then
-            echo "Error backing up nextcloud to onedrive-isel"
-            exit 1
-          fi
-
           echo "Backing up Nextcloud to backups"
           rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.NEXTCLOUD_SOURCE }} ${{ secrets.BACKUPS_DEST }}/nextcloud
           if [ $? -ne 0 ]; then
