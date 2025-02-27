@@ -55,5 +55,5 @@ jobs:
       - name: Update Rclone config
         uses: AnimMouse/setup-rclone/update-config@v1
         with:
-          rclone_config_secret_name: ${{ secrets.RCLONE_CONFIG}}
+          rclone_config_secret_name: ${{ secrets.RCLONE_CONFIG }}
           token: ${{ secrets.GH_PAT }}
