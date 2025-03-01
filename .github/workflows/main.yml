@@ -21,7 +21,7 @@ jobs:
       - name: Backup Nextcloud
         run: |
           echo "Backing up Nextcloud to backups"
-          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.NEXTCLOUD_SOURCE }} ${{ secrets.BACKUPS_DEST }}/nextcloud
+          rclone sync --metadata --create-empty-src-dirs ${{ secrets.NEXTCLOUD_SOURCE }} ${{ secrets.BACKUPS_DEST }}/nextcloud
           if [ $? -ne 0 ]; then
             echo "Error backing up nextcloud to backups"
             exit 1
@@ -30,7 +30,7 @@ jobs:
       - name: Backup Immich
         run: |
           echo "Backing up Immich to backups"
-          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.IMMICH_SOURCE }} ${{ secrets.BACKUPS_DEST }}/immich
+          rclone sync --metadata --create-empty-src-dirs ${{ secrets.IMMICH_SOURCE }} ${{ secrets.BACKUPS_DEST }}/immich
           if [ $? -ne 0 ]; then
             echo "Error backing up immich to backups"
             exit 1
@@ -39,7 +39,7 @@ jobs:
       - name: Sync Backup Folders
         run: |
           echo "Synching /backups with onedrive-isel/backups"
-          rclone sync -P --metadata --create-empty-src-dirs ${{ secrets.BACKUPS_DEST }} ${{ secrets.ONEDRIVE_DEST }}/backups --exclude"backups/immich/library/upload"
+          rclone sync --metadata --create-empty-src-dirs ${{ secrets.BACKUPS_DEST }} ${{ secrets.ONEDRIVE_DEST }}/backups --exclude"backups/immich/library/upload"
           if [ $? -ne 0 ]; then
             echo "Error synching backup folders"
             exit 1
